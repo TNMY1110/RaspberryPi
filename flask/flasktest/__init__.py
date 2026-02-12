@@ -3,7 +3,7 @@ from flask import Flask, url_for, request
 app = Flask(__name__)
 
 @app.route('/')
-@app.route('/hello<name>')
+@app.route('/hello/<name>')
 def hello_world(name):
     return 'Hello %s!' % name
 
@@ -37,6 +37,5 @@ def do_login():
     password = request.form.get('password')
     if check_login(username, password):
         return "<p>Your login information was correct.</p>"
-
     else:
         return "<p>Login failed.</p>"
