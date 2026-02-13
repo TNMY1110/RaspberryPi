@@ -149,7 +149,7 @@ def deltweet():
             app.tweets.remove(tweets)
             return '삭제 완료', 200
 
-return '트윗 내용이 다르거나 아이디가 다릅니다.', 400
+    return '트윗 내용이 다르거나 아이디가 다릅니다.', 400
 
 # 프로필 수정 API
 # PUT /user/<int:user_id> 엔드포인트 추가
@@ -157,5 +157,20 @@ return '트윗 내용이 다르거나 아이디가 다릅니다.', 400
 # password는 이 API로 변경 불가
 # 변경된 유저 정보를 JSON으로 반환
 
-# @app.route('/user/<int:user_id>', methods=['PUT'])
-# def deltweet():
+@app.route('/user/<int:user_id>', methods=['PUT'])
+def editprofile(user_id):
+    if user_id not in app.users:
+        return '사용자가 존재하지 않습니다.', 400
+
+    editinfo = request.json
+
+    if 'password' in editinfo:
+        return '비밀번호는 변경할 수 없습니다.', 400
+
+    if 'name' in editinfo:
+        app.users[user_id]['name'] = editinfo['name']
+
+    if 'email' in editinfo:
+        app.users[user_id]['email'] = editinfo['email']
+
+    return jsonify(app.users[user_id])
