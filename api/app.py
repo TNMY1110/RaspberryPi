@@ -205,12 +205,32 @@ def like():
             else:
                 return '이미 좋아요를 눌렀습니다', 400
 
-    return '트윗이 존재하지 않습니다.', 400
+    return '트윗이 존재하지 않습니다.', 404
 
 @app.route('/unlike', methods=['POST'])
 def unlike():
-    return 200
+    payload = request.json
+    user_id = int(payload['id'])
+    tweet_id = int(payload['tweet_id'])
 
-@app.route('/tweet/tweet_id', methods=['GET'])
-def tweetinfo():
-    return 200
+    if user_id not in app.users:
+        return '사용자가 존재하지 않습니다.', 400
+
+    for tweets in app.tweets:
+        if tweets['tweet_id'] == tweet_id:
+            if user_id in tweets['like']:
+                tweets['like'].remove(user_id)
+                return jsonify(tweets), 200
+            
+            else:
+                return '좋아요를 누르지 않은 트윗입니다.', 400
+
+    return '트윗이 존재하지 않습니다.', 404
+
+@app.route('/tweet/<int:tweet_id>', methods=['GET'])
+def tweetinfo(tweet_id):
+    for tweets in app.tweets:
+        if tweets['tweet_id'] == tweet_id:
+            return jsonify(tweets), 200
+        
+    return '트윗이 존재하지 않습니다.', 404
