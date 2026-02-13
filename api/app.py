@@ -96,3 +96,23 @@ def timeline(user_id):
         'user_id' : user_id,
         'timeline' : timeline
     })
+
+# 유저 정보 조회 API
+# GET /user/<int:user_id> 엔드포인트 추가
+# 해당 유저의 정보를 JSON으로 반환
+# 존재하지 않는 유저 요청 시 400 에러 반환
+# http GET localhost:5000/user/1
+
+@app.route('/user/<int:user_id>', methods=['GET'])
+def userinfo(user_id):
+    if user_id not in app.users:
+        return '사용자가 존재하지 않습니다.', 400
+
+    username = app.users[user_id].get('name', set())
+    useremail = app.users[user_id].get('email', set())
+
+    return jsonify({
+        'user_id' : user_id,
+        'name' : username,
+        'email' : useremail
+    })
