@@ -37,7 +37,7 @@ def tweet():
     payload = request.json
     user_id = int(payload['id'])
     tweet = payload['tweet']
-    like = []
+    like = []   # 빈 리스트 생성
 
     if user_id not in app.users:
         return '사용자가 존재하지 않습니다.', 400
@@ -52,7 +52,7 @@ def tweet():
         'like' : like
     })
 
-    app.tweet_id_count = app.tweet_id_count + 1     // 트윗 아이디 카운트 더하기
+    app.tweet_id_count = app.tweet_id_count + 1     # 트윗 아이디 카운트 더하기
 
     return '', 200
 
@@ -189,7 +189,23 @@ def editprofile(user_id):
 
 @app.route('/like', methods=['POST'])
 def like():
-    return 200
+    payload = request.json
+    user_id = int(payload['id'])
+    tweet_id = int(payload['tweet_id'])
+
+    if user_id not in app.users:
+        return '사용자가 존재하지 않습니다.', 400
+
+    for tweets in app.tweets:
+        if tweets['tweet_id'] == tweet_id:
+            if user_id not in tweets['like']:
+                tweets['like'].append(user_id)
+                return jsonify(tweets), 200
+            
+            else:
+                return '이미 좋아요를 눌렀습니다', 400
+
+    return '트윗이 존재하지 않습니다.', 400
 
 @app.route('/unlike', methods=['POST'])
 def unlike():
