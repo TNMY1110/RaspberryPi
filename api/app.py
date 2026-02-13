@@ -116,3 +116,19 @@ def userinfo(user_id):
         'name' : username,
         'email' : useremail
     })
+
+# 전체 유저 목록 조회
+# GET /users 엔드포인트 추가
+# 가입된 모든 유저 목록을 JSON 배열로 반환
+# 단, password는 제외하고 반환할 것
+
+@app.route('/users', methods=['GET'])
+def allusersinfo():
+    users_list = [
+        { 
+            'user_id' : user['id'], 
+            'name' : user['name'], 
+            'email' : user['email']
+        }for user in app.users.values()]
+
+    return jsonify(users_list)
