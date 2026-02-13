@@ -124,11 +124,6 @@ def userinfo(user_id):
 
 @app.route('/users', methods=['GET'])
 def allusersinfo():
-    users_list = [
-        { 
-            'user_id' : user['id'], 
-            'name' : user['name'], 
-            'email' : user['email']
-        }for user in app.users.values()]
+    users_list = [{key:val for key, val in user.items() if key != 'password'} for user in app.users.values()]
 
     return jsonify(users_list)
