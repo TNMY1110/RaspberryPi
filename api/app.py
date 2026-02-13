@@ -13,6 +13,7 @@ app = Flask(__name__)
 app.users = {}
 app.id_count = 1
 app.tweets = []
+app.tweet_id_count = 1      # 트윗 아이디 추가
 app.json_provider_class = CustomJSONProvider
 app.json = CustomJSONProvider(app)
 
@@ -36,6 +37,7 @@ def tweet():
     payload = request.json
     user_id = int(payload['id'])
     tweet = payload['tweet']
+    like = []
 
     if user_id not in app.users:
         return '사용자가 존재하지 않습니다.', 400
@@ -45,8 +47,12 @@ def tweet():
 
     app.tweets.append({
         'user_id' : user_id,
-        'tweet' : tweet
+        'tweet' : tweet,
+        'tweet_id' : app.tweet_id_count,
+        'like' : like
     })
+
+    app.tweet_id_count = app.tweet_id_count + 1     // 트윗 아이디 카운트 더하기
 
     return '', 200
 
@@ -174,3 +180,21 @@ def editprofile(user_id):
         app.users[user_id]['email'] = editinfo['email']
 
     return jsonify(app.users[user_id])
+
+# 좋아요(Like) 시스템
+# 트윗에 고유 ID를 부여하도록 구조 변경 (app.tweet_id_count 추가)
+# POST /like - 특정 트윗에 좋아요
+# POST /unlike - 좋아요 취소
+# GET /tweet/<int:tweet_id> - 트윗 상세 조회 (좋아요 수 포함)
+
+@app.route('/like', methods=['POST'])
+def like():
+    return 200
+
+@app.route('/unlike', methods=['POST'])
+def unlike():
+    return 200
+
+@app.route('/tweet/tweet_id', methods=['GET'])
+def tweetinfo():
+    return 200
