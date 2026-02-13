@@ -133,8 +133,9 @@ def allusersinfo():
 # 요청 body: {"id": 유저ID, "tweet": "삭제할 트윗 내용"}
 # 해당 유저의 해당 트윗을 app.tweets에서 제거
 # 자기 트윗만 삭제 가능하도록 검증
+# 앞에 POST가 DELETE로 달라지니 별 상관 없을거 같다
 
-@app.route('/deltweet', methods=['DELETE'])
+@app.route('/tweet', methods=['DELETE'])
 def deltweet():
     payload = request.json
     user_id = int(payload['id'])
@@ -146,6 +147,15 @@ def deltweet():
     for tweets in app.tweets:
         if tweets['user_id'] == user_id and tweets['tweet'] == tweet:
             app.tweets.remove(tweets)
-            break
+            return '삭제 완료', 200
 
-    return '삭제 완료', 200
+return '트윗 내용이 다르거나 아이디가 다릅니다.', 400
+
+# 프로필 수정 API
+# PUT /user/<int:user_id> 엔드포인트 추가
+# name, email 변경 가능 (부분 수정 지원)
+# password는 이 API로 변경 불가
+# 변경된 유저 정보를 JSON으로 반환
+
+# @app.route('/user/<int:user_id>', methods=['PUT'])
+# def deltweet():
