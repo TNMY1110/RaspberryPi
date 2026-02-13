@@ -127,3 +127,25 @@ def allusersinfo():
     users_list = [{key:val for key, val in user.items() if key != 'password'} for user in app.users.values()]
 
     return jsonify(users_list)
+
+# 트윗 삭제 기능
+# DELETE /tweet 엔드포인트 추가
+# 요청 body: {"id": 유저ID, "tweet": "삭제할 트윗 내용"}
+# 해당 유저의 해당 트윗을 app.tweets에서 제거
+# 자기 트윗만 삭제 가능하도록 검증
+
+@app.route('/deltweet', methods=['DELETE'])
+def deltweet():
+    payload = request.json
+    user_id = int(payload['id'])
+    tweet = payload['tweet']
+
+    if user_id not in app.users:
+        return '사용자가 존재하지 않습니다.', 400
+
+    for tweets in app.tweets:
+        if tweets['user_id'] == user_id and tweets['tweet'] == tweet:
+            app.tweets.remove(tweets)
+            break
+
+    return '삭제 완료', 200
