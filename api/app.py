@@ -45,6 +45,25 @@ def get_user(user_id):
         'profile' : user[3]
     } if user else None
 
+def get_all_users():
+    with current_app.database.connect() as conn:
+        users = conn.execute(text("""
+            SELECT
+                id,
+                name,
+                email,
+                profile
+            FROM users
+        """)).fetchall()
+
+    return [{
+        'id'      : user[0],
+        'name'    : user[1],
+        'email'   : user[2],
+        'profile' : user[3]
+    } for user in users]
+
+
 def insert_tweet(user_tweet):
     with current_app.database.connect() as conn:
         result = conn.execute(text("""
@@ -171,5 +190,9 @@ def create_app(test_config=None):
             return '사용자가 존재하지 않습니다', 404
 
         return jsonify(user)
-        
+    
+    @app.route('/users', methods=['GET'])
+    def allusersinfo():
+        return jsonify(get_all_users())
+
     return app
