@@ -78,6 +78,15 @@ def insert_tweet(user_tweet):
         conn.commit()
         return result.rowcount
 
+def delete_tweet(tweet_id):
+    with current_app.database.connect() as conn:
+        result = conn.execute(text("""
+            DELETE FROM tweets
+            WHERE id = :tweet_id
+        """), {'tweet_id': tweet_id})
+        conn.commit()
+        return result.rowcount
+
 def insert_follow(user_follow):
     with current_app.database.connect() as conn:
         result = conn.execute(text("""
@@ -156,6 +165,14 @@ def create_app(test_config=None):
 
         insert_tweet(user_tweet)
 
+        return '', 200
+
+    @app.route('/tweet/<int:tweet_id>', methods=['DELETE'])
+    def delete_tweet_endpoint(tweet_id):
+        rows = delete_tweet(tweet_id)
+        if rows == 0:
+            return '트윗이 존재하지 않습니다.', 404
+            
         return '', 200
 
 
