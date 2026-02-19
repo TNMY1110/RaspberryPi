@@ -235,8 +235,8 @@ def create_app(test_config=None):
 
     # 프로필 수정 API
     # PUT /user/<int:user_id> 엔드포인트 추가
-    # name, email 변경 가능 (부분 수정 지원)
-    # password는 이 API로 변경 불가
+    # name, profile 변경 가능 (부분 수정 지원)
+    # password, email은 이 API로 변경 불가
     # 변경된 유저 정보를 JSON으로 반환
 
     @app.route('/user/<int:user_id>', methods=['PUT'])
