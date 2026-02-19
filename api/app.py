@@ -21,7 +21,7 @@ app.json = CustomJSONProvider(app)
 @app.route("/ping", methods=['GET'])
 
 def ping():
-    return "pong"
+    return "pong", 200
 
 @app.route("/sign-up", methods=['POST'])
 def sign_up():
@@ -112,7 +112,7 @@ def timeline(user_id):
 @app.route('/user/<int:user_id>', methods=['GET'])
 def userinfo(user_id):
     if user_id not in app.users:
-        return '사용자가 존재하지 않습니다.', 400
+        return '사용자가 존재하지 않습니다.', 404
 
     username = app.users[user_id].get('name', set())
     useremail = app.users[user_id].get('email', set())
@@ -166,7 +166,7 @@ def deltweet():
 @app.route('/user/<int:user_id>', methods=['PUT'])
 def editprofile(user_id):
     if user_id not in app.users:
-        return '사용자가 존재하지 않습니다.', 400
+        return '사용자가 존재하지 않습니다.', 404
 
     editinfo = request.json
 
