@@ -26,6 +26,27 @@ def insert_user(user):
         conn.commit()
         return result.lastrowid
 
+def update_user(user_id, data):
+    with current_app.database.connect() as conn:
+        user = get_user(user_id)
+        data['user_id'] = user_id
+
+        if data.get('name') is None:
+            data['name'] = user['name']
+
+        if data.get('profile') is None:
+            data['profile'] = user['profile']
+
+        result = conn.execute(text("""
+            UPDATE users 
+            SET 
+                name = :name, 
+                profile = :profile
+            WHERE id = :user_id
+        """), data)
+        conn.commit()
+        return result.lastrowid
+
 def get_user(user_id):
     with current_app.database.connect() as conn:
         user = conn.execute(text("""
@@ -211,5 +232,32 @@ def create_app(test_config=None):
     @app.route('/users', methods=['GET'])
     def allusersinfo():
         return jsonify(get_all_users())
+
+    # 프로필 수정 API
+    # PUT /user/<int:user_id> 엔드포인트 추가
+    # name, email 변경 가능 (부분 수정 지원)
+    # password는 이 API로 변경 불가
+    # 변경된 유저 정보를 JSON으로 반환
+
+    @app.route('/user/<int:user_id>', methods=['PUT'])
+    def editprofile(user_id):
+        user = get_user(user_id)
+
+        if user is None:
+            return '사용자가 존재하지 않습니다', 404
+
+        editinfo = request.json
+
+        if 'email' in editinfo:
+            return '이메일은 변경할 수 없습니다.', 400
+
+        if 'password' in editinfo:
+            return '비밀번호는 변경할 수 없습니다.', 400
+
+        update_user(user_id, editinfo)
+
+        user = get_user(user_id)
+
+        return jsonify(user)
 
     return app
