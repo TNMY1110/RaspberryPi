@@ -10,8 +10,8 @@
         <script src="//code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/4.0.4/highcharts.js"></script>
         <script>
-            var chart;  // 온도
-            var chart2;  // 습도
+            var temp_chart;  // 온도
+            var humi_chart;  // 습도
             var pollUri = "/events";
             function pollEvent()
             {
@@ -19,29 +19,29 @@
                     {
                         var t = new Date();
                         t.setHours(t.getHours() + 9);
-                        chartAddPoint([t.getTime(), Number(data.temperature)]);
-                        chart2AddPoint([t.getTime(), Number(data.humidity)]);
+                        tempchartAddPoint([t.getTime(), Number(data.temperature)]);
+                        humichartAddPoint([t.getTime(), Number(data.humidity)]);
                     }
                 );
                 setTimeout('pollEvent()', 5000);
             }
             pollEvent();
-            function chartAddPoint(tVal)
+            function tempchartAddPoint(tVal)
             {
-                var series = chart.series[0],
+                var series = temp_chart.series[0],
                 shift = series.data.length > 20;
-                chart.series[0].addPoint(eval(tVal), true, shift);
+                temp_chart.series[0].addPoint(eval(tVal), true, shift);
             }
-            function chart2AddPoint(hVal)
+            function humichartAddPoint(hVal)
             {
-                var series2 = chart2.series[0],
+                var series2 = humi_chart.series[0],
                 shift2 = series2.data.length > 20;
-                chart2.series[0].addPoint(eval(hVal), true, shift2);
+                humi_chart.series[0].addPoint(eval(hVal), true, shift2);
             }
             $(function()
                 {
                     // 온도
-                    chart = new Highcharts.Chart(
+                    temp_chart = new Highcharts.Chart(
                         {
                             chart: { renderTo: 'temp', defaultSeriesType: 'spline' },
                             title: { text: '실시간 온도 데이터' },
@@ -55,7 +55,7 @@
                     );
                     
                     // 습도
-                    chart2 = new Highcharts.Chart(
+                    humi_chart = new Highcharts.Chart(
                         {
                             chart: { renderTo: 'humi', defaultSeriesType: 'spline' },
                             title: { text: '실시간 습도 데이터' },
