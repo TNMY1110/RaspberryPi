@@ -8,13 +8,18 @@
         <link rel = "stylesheet" href = "//code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.css" />
         <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
         <script src="//code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/4.0.4/highcharts.js"></script>
         <script>
             var temp_chart;  // 온도
             var humi_chart;  // 습도
             var socket = io();
-            socket.on('connect', function(msg)
+            socket.on('connect', function()
+                {
+                    socket.emit('join_web', {room:'WEB'});
+                }
+            );
+            socket.on('dht_chart', function(msg)
                 {
                     var data = msg.data;
                     var t = new Date();
@@ -23,7 +28,6 @@
                     humichartAddPoint([t.getTime(), Number(data.humidity)]);
                 }
             );
-
             function tempchartAddPoint(tVal)
             {
                 var series = temp_chart.series[0],

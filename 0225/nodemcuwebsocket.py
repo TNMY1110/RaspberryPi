@@ -3,7 +3,7 @@ from flask_socketio import SocketIO, emit, join_room
 import json, time, os
 
 app = Flask(__name__, template_folder = "./templates")
-socketio = SocketIO(app = app, logger = True, cors_allowed_origins = '*')
+socketio = SocketIO(app = app, cors_allowed_origins = '*')
 
 @socketio.on('join_web')
 def join_web(message):
